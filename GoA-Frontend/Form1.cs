@@ -2,13 +2,17 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace GoA_AIO
+namespace GoA
 {
     public partial class Form1 : Form
     {
+        private Backend backend;
+
         public Form1()
         {
             InitializeComponent();
+
+            backend = new Backend();
         }
 
         const string WAITING_STRING = "Waiting for KINGDOM HEARTS II FINAL MIX";
@@ -49,9 +53,11 @@ namespace GoA_AIO
             if (processes.Length > 0)
             {
                 var process = processes[0];
-                if (true) // TODO(skettios): inject backend to process
+                if (backend.Inject(process.Id)) // TODO(skettios): inject backend to process
                 {
                     SetGameAttachedLabels(true);
+
+                    backend.Run();
 
                     waitTimer.Stop();
                     checkTimer.Start();

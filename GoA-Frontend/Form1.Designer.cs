@@ -1,5 +1,5 @@
 ﻿
-namespace GoA_AIO
+namespace GoA
 {
     partial class Form1
     {
@@ -55,6 +55,7 @@ namespace GoA_AIO
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.trayExit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.contextMenuStrip1.Size = new System.Drawing.Size(94, 26);
             // 
             // trayExit

@@ -4,10 +4,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GoA-Backend", "GoA-Backend\GoA-Backend.vcxproj", "{05871E8E-EEFB-4142-A323-F545A7AEFFAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1C5A23EE-A219-49F0-AB84-31B820B1B25C} = {1C5A23EE-A219-49F0-AB84-31B820B1B25C}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoA-Frontend", "GoA-Frontend\GoA-Frontend.csproj", "{F27BEA91-48FE-4D28-B3AF-B47E2A667F77}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GoA-Lua", "GoA-Lua\GoA-Lua.vcxproj", "{1C5A23EE-A219-49F0-AB84-31B820B1B25C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CDCB597-EE37-4E27-87CC-E78767A9EFA6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

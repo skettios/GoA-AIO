@@ -48,7 +48,10 @@ lua_State* GoA_InitializeScript(const char* path)
 	lua_register(L, "WriteLongA", Lua_WriteA<u64>);
 	lua_register(L, "WriteFloatA", Lua_WriteA<f32>);
 
-	luaL_loadfile(L, path);
+	lua_register(L, "WriteString", Lua_WriteString);
+	lua_register(L, "WriteStringA", Lua_WriteStringA);
+
+	luaL_dofile(L, path);
 
 	return L;
 }
@@ -73,6 +76,7 @@ extern "C"
 	void _declspec(dllexport) GoA_Run(BackendConfig* config)
 	{
 		KH2_BASE_ADDRESS = (u8*)GetModuleHandle(NULL);
+		KH2_BASE_ADDRESS += 0x56450E; //NOTE(skettios): this is just to maintain compatibility with LuaBackend scripts
 
 		std::vector<lua_State*> scripts;
 		for (auto& entry : std::filesystem::directory_iterator(config->scriptsDirectory))

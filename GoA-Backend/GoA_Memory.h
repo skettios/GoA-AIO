@@ -24,12 +24,12 @@ void GoA_Write(u8* address, T value)
 	*(T*)((void*)address) = value;
 }
 
-void GoA_ReadString(u8* address);
+void GoA_WriteString(u8* address, const char *value, size_t length = 0);
 
 template<typename T>
 int Lua_Read(lua_State* L)
 {
-	u64 offset = lua_tointeger(L, 1);
+	u64 offset = (u64)lua_tonumber(L, 1);
 	if (KH2_BASE_ADDRESS + offset < KH2_BASE_ADDRESS)
 	{
 		lua_pushnumber(L, 0);
@@ -45,7 +45,7 @@ int Lua_Read(lua_State* L)
 template<typename T>
 int Lua_ReadA(lua_State* L)
 {
-	u64 address = lua_tointeger(L, 1);
+	u64 address = (u64)lua_tonumber(L, 1);
 	if (address < (u64)KH2_BASE_ADDRESS)
 	{
 		lua_pushnumber(L, 0);
@@ -61,7 +61,7 @@ int Lua_ReadA(lua_State* L)
 template<typename T>
 int Lua_Write(lua_State* L)
 {
-	u64 offset = lua_tointeger(L, 1);
+	u64 offset = (u64)lua_tonumber(L, 1);
 	T value = static_cast<T>(lua_tonumber(L, 2));
 	if (KH2_BASE_ADDRESS + offset < KH2_BASE_ADDRESS)
 	{
@@ -76,7 +76,7 @@ int Lua_Write(lua_State* L)
 template<typename T>
 int Lua_WriteA(lua_State* L)
 {
-	u64 address = lua_tointeger(L, 1);
+	u64 address = (u64)lua_tonumber(L, 1);
 	T value = static_cast<T>(lua_tonumber(L, 2));
 	if (address < (u64)KH2_BASE_ADDRESS)
 	{
@@ -87,6 +87,9 @@ int Lua_WriteA(lua_State* L)
 
 	return 0;
 }
+
+int Lua_WriteString(lua_State* L);
+int Lua_WriteStringA(lua_State* L);
 
 #pragma warning(pop)
 
