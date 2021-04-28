@@ -14,12 +14,6 @@ extern "C"
 #include "GoA_Defines.h"
 #include "GoA_Memory.h"
 
-struct BackendConfig
-{
-	const char* scriptsDirectory;
-	bool keybindsEnabled;
-};
-
 u8* KH2_BASE_ADDRESS;
 
 lua_State* GoA_InitializeScript(const char* path)
@@ -37,17 +31,42 @@ lua_State* GoA_InitializeScript(const char* path)
 	lua_register(L, "ReadInt", Lua_Read<u32>);
 	lua_register(L, "ReadLong", Lua_Read<u64>);
 	lua_register(L, "ReadFloat", Lua_Read<f32>);
+	lua_register(L, "ReadByteA", Lua_ReadA<u8>);
+	lua_register(L, "ReadShortA", Lua_ReadA<u16>);
+	lua_register(L, "ReadIntA", Lua_ReadA<u32>);
+	lua_register(L, "ReadLongA", Lua_ReadA<u64>);
+	lua_register(L, "ReadFloatA", Lua_ReadA<f32>);
 
 	lua_register(L, "WriteByte", Lua_Write<u8>);
 	lua_register(L, "WriteShort", Lua_Write<u16>);
 	lua_register(L, "WriteInt", Lua_Write<u32>);
 	lua_register(L, "WriteLong", Lua_Write<u64>);
 	lua_register(L, "WriteFloat", Lua_Write<f32>);
+	lua_register(L, "WriteByteA", Lua_WriteA<u8>);
+	lua_register(L, "WriteShortA", Lua_WriteA<u16>);
+	lua_register(L, "WriteIntA", Lua_WriteA<u32>);
+	lua_register(L, "WriteLongA", Lua_WriteA<u64>);
+	lua_register(L, "WriteFloatA", Lua_WriteA<f32>);
 
-	luaL_dofile(L, path);
+	luaL_loadfile(L, path);
 
 	return L;
 }
+
+inline void GoA_CallLuaFunction(lua_State* L, const char* functionName)
+{
+	lua_getglobal(L, functionName);
+	lua_call(L, 0, 0);
+	lua_pop(L, 0);
+}
+
+struct BackendConfig
+{
+	const char* scriptsDirectory;
+	const char* processExecutablePath;
+	bool keybindsEnabled;
+	bool running;
+};
 
 extern "C"
 {
@@ -62,7 +81,25 @@ extern "C"
 			{
 				lua_State* L = GoA_InitializeScript(entry.path().u8string().c_str());
 				scripts.push_back(L);
+
+				GoA_CallLuaFunction(L, "_OnInit");
 			}
 		}
+
+		while (config->running)
+		{
+			if (config->keybindsEnabled)
+			{
+				//TODO(skettios): add keybinds
+			}
+
+			for (auto L : scripts)
+				GoA_CallLuaFunction(L, "_OnFrame");
+
+			Sleep(1);
+		}
+
+		for (auto L : scripts)
+			lua_close(L);
 	}
 }
