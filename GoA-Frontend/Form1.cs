@@ -11,12 +11,11 @@ namespace GoA
         public Form1()
         {
             InitializeComponent();
-
             backend = new Backend();
         }
 
         const string WAITING_STRING = "Waiting for KINGDOM HEARTS II FINAL MIX";
-        const string ATTACHED_STRING = "Garden of Assemblage injected";
+        const string ATTACHED_STRING = "Garden of Assemblage running";
 
         private void SetGameAttachedLabels(bool toggle)
         {
@@ -40,6 +39,8 @@ namespace GoA
                 // TODO(skettios): set application to wait for process
                 SetGameAttachedLabels(false);
 
+                backend.Reset();
+
                 checkTimer.Stop();
                 waitTimer.Start();
             }
@@ -57,7 +58,7 @@ namespace GoA
                 {
                     SetGameAttachedLabels(true);
 
-                    backend.Run();
+                    backend.Run(process.MainModule.ModuleName);
 
                     waitTimer.Stop();
                     checkTimer.Start();
@@ -86,6 +87,8 @@ namespace GoA
             waitTimer.Start();
 
             trayExit.Click += trayExit_Click;
+
+            Hide();
         }
 
         private void trayExit_Click(object sender, EventArgs e)

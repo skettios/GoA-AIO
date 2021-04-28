@@ -14,7 +14,18 @@ extern "C"
 #include "GoA_Defines.h"
 #include "GoA_Memory.h"
 
+#include "CRC.h"
+
+struct BackendConfig
+{
+	const char* scriptsDirectory;
+	const char* processExecutablePath;
+	bool keybindsEnabled;
+	bool running;
+};
+
 u8* KH2_BASE_ADDRESS;
+u32 CRC;
 
 lua_State* GoA_InitializeScript(const char* path)
 {
@@ -22,6 +33,12 @@ lua_State* GoA_InitializeScript(const char* path)
 
 	lua_pushinteger(L, (u64)KH2_BASE_ADDRESS);
 	lua_setglobal(L, "BaseAddress");
+
+	lua_pushnumber(L, (u32)CRC);
+	lua_setglobal(L, "GAME_ID");
+
+	lua_pushstring(L, "BACKEND");
+	lua_setglobal(L, "ENGINE_TYPE");
 
 	luaL_openlibs(L);
 
@@ -51,6 +68,9 @@ lua_State* GoA_InitializeScript(const char* path)
 	lua_register(L, "WriteString", Lua_WriteString);
 	lua_register(L, "WriteStringA", Lua_WriteStringA);
 
+	lua_register(L, "WriteArray", Lua_WriteByteArray);
+	lua_register(L, "WriteArrayA", Lua_WriteByteArrayA);
+
 	luaL_dofile(L, path);
 
 	return L;
@@ -63,20 +83,14 @@ inline void GoA_CallLuaFunction(lua_State* L, const char* functionName)
 	lua_pop(L, 0);
 }
 
-struct BackendConfig
-{
-	const char* scriptsDirectory;
-	const char* processExecutablePath;
-	bool keybindsEnabled;
-	bool running;
-};
-
 extern "C"
 {
 	void _declspec(dllexport) GoA_Run(BackendConfig* config)
 	{
 		KH2_BASE_ADDRESS = (u8*)GetModuleHandle(NULL);
 		KH2_BASE_ADDRESS += 0x56450E; //NOTE(skettios): this is just to maintain compatibility with LuaBackend scripts
+
+		CRC = CRC::Calculate(config->processExecutablePath, strlen(config->processExecutablePath), CRC::CRC_32());
 
 		std::vector<lua_State*> scripts;
 		for (auto& entry : std::filesystem::directory_iterator(config->scriptsDirectory))

@@ -62,6 +62,15 @@ namespace GoA
             DLLPath = Directory.GetCurrentDirectory() + "\\GoA-Backend.dll";
         }
 
+        public void Reset()
+        {
+            Native.CloseHandle(KH2Handle);
+            Native.FreeLibrary(DLLHandle);
+
+            KH2Handle = IntPtr.Zero;
+            DLLHandle = IntPtr.Zero;
+        }
+
         public bool Inject(int procId)
         {
             if (KH2Handle != IntPtr.Zero)
@@ -105,23 +114,26 @@ namespace GoA
             public byte running;
         }
 
-        public void Run()
+        public void Run(string executablePath)
         {
             DLLHandle = Native.LoadLibrary("GoA-Backend.dll");
 
             var config = new BackendConfig()
             {
-                proccessExecutablePath = IntPtr.Zero,
                 keybindsEnabled = 0,
                 running = 1
             };
 
             string scriptsDir = Directory.GetCurrentDirectory() + "\\scripts";
-            IntPtr scriptsDirAddress = Native.VirtualAllocEx(KH2Handle, IntPtr.Zero, (uint)(scriptsDir.Length + Marshal.SizeOf<char>()), Native.MEM_ALL, Native.PAGE_READWRITE);
+            IntPtr scriptsDirAddress = Native.VirtualAllocEx(KH2Handle, IntPtr.Zero, (uint)(scriptsDir.Length * Marshal.SizeOf<char>()), Native.MEM_ALL, Native.PAGE_READWRITE);
             UIntPtr bytesWritten;
             Native.WriteProcessMemory(KH2Handle, scriptsDirAddress, Encoding.Default.GetBytes(scriptsDir), (uint)(scriptsDir.Length + Marshal.SizeOf<char>()), out bytesWritten);
 
+            IntPtr executablePathAddress = Native.VirtualAllocEx(KH2Handle, IntPtr.Zero, (uint)(executablePath.Length * Marshal.SizeOf<char>()), Native.MEM_ALL, Native.PAGE_READWRITE);
+            Native.WriteProcessMemory(KH2Handle, executablePathAddress, Encoding.Default.GetBytes(executablePath), (uint)(executablePath.Length * Marshal.SizeOf<char>()), out bytesWritten);
+
             config.scriptsDirectory = scriptsDirAddress;
+            config.proccessExecutablePath = executablePathAddress;
 
             byte[] bytes = new byte[Marshal.SizeOf<BackendConfig>()];
             IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf<BackendConfig>());
@@ -134,6 +146,8 @@ namespace GoA
 
             IntPtr runAddress = Native.GetProcAddress(DLLHandle, "GoA_Run");
             IntPtr threadHandle = Native.CreateRemoteThread(KH2Handle, IntPtr.Zero, 0, runAddress, configAddress, 0, IntPtr.Zero);
+            if (threadHandle != IntPtr.Zero)
+                Native.CloseHandle(threadHandle);
         }
     }
 }

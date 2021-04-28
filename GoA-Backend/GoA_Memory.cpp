@@ -8,7 +8,13 @@ void GoA_WriteString(u8* address, const char* value, size_t length)
 		length = strlen(value);
 
 	for (size_t i = 0; i < length; i++)
-		GoA_Write<u8>(address, value[0]);
+		GoA_Write<char>(address + i, value[i]);
+}
+
+void GoA_WriteByteArray(u8* address, u8* bytes, size_t length)
+{
+	for (size_t i = 0; i < length; i++)
+		GoA_Write<u8>(address + i, bytes[i]);
 }
 
 int Lua_WriteString(lua_State* L)
@@ -34,6 +40,42 @@ int Lua_WriteStringA(lua_State* L)
 		size_t length = lua_rawlen(L, 2);
 
 		GoA_WriteString((u8*)((void*)address), value, length);
+	}
+
+	return 0;
+}
+
+int Lua_WriteByteArray(lua_State* L)
+{
+	if (lua_istable(L, 2))
+	{
+		lua_settop(L, 2);
+		u64 offset = (u64)lua_tonumber(L, 1);
+		size_t length = lua_rawlen(L, 2);
+		for (int i = 0; i < length; i++)
+		{
+			u8 byte = (u8)lua_tonumber(L, -i);
+			GoA_Write<u8>(KH2_BASE_ADDRESS + offset + i, byte);
+		}
+		lua_pop(L, 2);
+	}
+
+	return 0;
+}
+
+int Lua_WriteByteArrayA(lua_State* L)
+{
+	if (lua_istable(L, 2))
+	{
+		lua_settop(L, 2);
+		u64 address = (u64)lua_tonumber(L, 1);
+		size_t length = lua_rawlen(L, 2);
+		for (int i = 0; i < length; i++)
+		{
+			u8 byte = (u8)lua_tonumber(L, -i);
+			GoA_Write<u8>((u8*)((void*)(address + i)), byte);
+		}
+		lua_pop(L, 2);
 	}
 
 	return 0;

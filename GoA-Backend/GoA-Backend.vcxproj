@@ -150,6 +150,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CRC.h" />
     <ClInclude Include="GoA_Defines.h" />
     <ClInclude Include="GoA_Globals.h" />
     <ClInclude Include="GoA_Memory.h" />

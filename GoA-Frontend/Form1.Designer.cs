@@ -94,6 +94,7 @@ namespace GoA
             this.MinimumSize = new System.Drawing.Size(500, 550);
             this.Name = "Form1";
             this.Text = "Garden of Assemblage All in One";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.contextMenuStrip1.ResumeLayout(false);

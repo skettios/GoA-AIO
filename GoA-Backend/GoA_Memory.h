@@ -91,6 +91,9 @@ int Lua_WriteA(lua_State* L)
 int Lua_WriteString(lua_State* L);
 int Lua_WriteStringA(lua_State* L);
 
+int Lua_WriteByteArray(lua_State* L);
+int Lua_WriteByteArrayA(lua_State* L);
+
 #pragma warning(pop)
 
 #endif // __GOA_MEMORY_H__
