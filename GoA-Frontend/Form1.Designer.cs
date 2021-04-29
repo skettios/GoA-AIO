@@ -33,6 +33,7 @@ namespace GoA
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trayKeybinds = new System.Windows.Forms.ToolStripMenuItem();
             this.trayExit = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.gameStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -53,15 +54,22 @@ namespace GoA
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.trayKeybinds,
             this.trayExit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(94, 26);
+            this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 48);
+            // 
+            // trayKeybinds
+            // 
+            this.trayKeybinds.Name = "trayKeybinds";
+            this.trayKeybinds.Size = new System.Drawing.Size(160, 22);
+            this.trayKeybinds.Text = "Enable Keybinds";
             // 
             // trayExit
             // 
             this.trayExit.Name = "trayExit";
-            this.trayExit.Size = new System.Drawing.Size(93, 22);
+            this.trayExit.Size = new System.Drawing.Size(160, 22);
             this.trayExit.Text = "Exit";
             // 
             // statusStrip1
@@ -114,6 +122,7 @@ namespace GoA
         private System.Windows.Forms.Timer checkTimer;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem trayExit;
+        private System.Windows.Forms.ToolStripMenuItem trayKeybinds;
     }
 }
 

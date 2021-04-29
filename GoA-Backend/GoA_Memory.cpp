@@ -49,15 +49,18 @@ int Lua_WriteByteArray(lua_State* L)
 {
 	if (lua_istable(L, 2))
 	{
-		lua_settop(L, 2);
 		u64 offset = (u64)lua_tonumber(L, 1);
 		size_t length = lua_rawlen(L, 2);
+		
+		lua_settop(L, 2);
+		lua_pushnil(L);
 		for (int i = 0; i < length; i++)
 		{
-			u8 byte = (u8)lua_tonumber(L, -i);
+			lua_next(L, -2);
+			u8 byte = (u8)lua_tonumber(L, -1);
 			GoA_Write<u8>(KH2_BASE_ADDRESS + offset + i, byte);
+			lua_pop(L, 1);
 		}
-		lua_pop(L, 2);
 	}
 
 	return 0;
@@ -67,15 +70,18 @@ int Lua_WriteByteArrayA(lua_State* L)
 {
 	if (lua_istable(L, 2))
 	{
-		lua_settop(L, 2);
 		u64 address = (u64)lua_tonumber(L, 1);
 		size_t length = lua_rawlen(L, 2);
+
+		lua_settop(L, 2);
+		lua_pushnil(L);
 		for (int i = 0; i < length; i++)
 		{
-			u8 byte = (u8)lua_tonumber(L, -i);
+			lua_next(L, -2);
+			u8 byte = (u8)lua_tonumber(L, -1);
 			GoA_Write<u8>((u8*)((void*)(address + i)), byte);
+			lua_pop(L, 1);
 		}
-		lua_pop(L, 2);
 	}
 
 	return 0;

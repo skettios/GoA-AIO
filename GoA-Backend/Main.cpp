@@ -31,7 +31,7 @@ lua_State* GoA_InitializeScript(const char* path)
 {
 	lua_State* L = luaL_newstate();
 
-	lua_pushinteger(L, (u64)KH2_BASE_ADDRESS);
+	lua_pushnumber(L, (u64)KH2_BASE_ADDRESS);
 	lua_setglobal(L, "BaseAddress");
 
 	lua_pushnumber(L, (u32)CRC);

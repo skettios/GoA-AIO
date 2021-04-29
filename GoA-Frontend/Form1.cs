@@ -82,18 +82,26 @@ namespace GoA
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            trayKeybinds.CheckOnClick = true;
+
             checkTimer.Tick += checkTimer_Tick;
             waitTimer.Tick += waitTimer_Tick;
-            waitTimer.Start();
-
+            
             trayExit.Click += trayExit_Click;
-
+            trayKeybinds.CheckedChanged += trayKeybinds_OnCheckedChanged;
+            
+            waitTimer.Start();
+            
             Hide();
         }
 
         private void trayExit_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void trayKeybinds_OnCheckedChanged(object sender, EventArgs e)
+        {
         }
     }
 }
