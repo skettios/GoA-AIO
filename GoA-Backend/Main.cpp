@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <Windows.h>
 #include <vector>
 #include <string>
@@ -26,6 +28,20 @@ struct BackendConfig
 
 u8* KH2_BASE_ADDRESS;
 u32 CRC;
+
+const u32 TRESURE_OFFSETS[592] = {
+	0x00, // 0
+	0x00, 0x2A6E5FA, 0x2A6E612, 0x00, 0x2A6E67E, 0x00, 0x2A6E5BE, 0x2A6E5CA, 0x2A6E636, 0x2A6E642,	//10
+	0x2A6E5E2, 0x2A6E41A, 0x00, 0x00, 0x00, 0x2A6E462, 0x2A6E46E, 0x2A6E47A, 0x00, 0x00,		// 20
+	0x2A6E1FE, 0x2A6E216, 0x2A6E222, 0x2A6E25E, 0x2A6E276, 0x2A6E28E, 0x2A6E29A, 0x2A6E2D6, 0x2A6E2E2, 0x2A6E2EE,	// 30
+	0x2A6E32A, 0x2A6E336, 0x2A6E342, 0x2A6E3F6, 0x2A6E396, 0x2A6E3A2, 0x2A6E3D2, 0x00, 0x2A6E6A2, 0x2A6E6AE,	// 40
+	0x2A6E6F6, 0x2A6E77A, 0x2A6E74A, 0x2A6E756, 0x2A6E76E, 0x2A6E6C6, 0x00, 0x00, 0x2A6E7E6, 0x2A6E7F2,	// 50
+	0x2A6E82E, 0x00, 0x2A6E846, 0x2A6E882, 0x2A6E8A6, 0x2A6E8B2, 0x2A6E8D6, 0x2A6E8E2, 0x00, 0x00,		// 60
+	0x00, 0x00, 0x2A6E6DE, 0x2A6E7AA, 0x2A6E7B6, 0x00, 0x00, 0x00, 0x00, 0x2A6E8EE,	// 70
+	0x2A6E912, 0x2A6E91E, 0x2A6E92A, 0x2A6E942, 0x2A6E972, 0x2A6E9A2, 0x2A6E9C6, 0x2A6E9D2, 0x2A6E40E, 0x00,		// 80
+	0x2A6E426, 0x2A6E432, 0x2A6E43E, 0x2A6E44A, 0x2A6E456, 0x00, 0x00, 0x00, 0x00, 0x00,		// 90
+	0x2A6E4B6, 0x2A6E486, 0x2A6E492, 0x2A6E5A6, 0x00, 0x00, 0x2A6E4CE, 0x2A6E4DA, 0x00, 0x2A6E516,	// 100
+};
 
 lua_State* GoA_InitializeScript(const char* path)
 {
@@ -83,10 +99,20 @@ inline void GoA_CallLuaFunction(lua_State* L, const char* functionName)
 	lua_pop(L, 0);
 }
 
+struct RandomizerConfig
+{
+	u16 treasures[592];
+};
+
 extern "C"
 {
 	void _declspec(dllexport) GoA_Run(BackendConfig* config)
 	{
+#if 0
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+#endif
+
 		KH2_BASE_ADDRESS = (u8*)GetModuleHandle(NULL);
 		KH2_BASE_ADDRESS += 0x56450E; //NOTE(skettios): this is just to maintain compatibility with LuaBackend scripts
 
@@ -119,5 +145,19 @@ extern "C"
 
 		for (auto L : scripts)
 			lua_close(L);
+	}
+
+	void _declspec(dllexport) GoA_Randomize(u16* treasures)
+	{
+		u8* REAL_BASE_ADDRESS = (u8*)GetModuleHandle(NULL);
+
+		for (u32 i = 0; i < 100; i++)
+		{
+			if (TRESURE_OFFSETS[i] != 0x00)
+			{
+				std::cout << std::hex << TRESURE_OFFSETS[i] << ":" << treasures[i] << std::endl;
+				GoA_Write<u16>(REAL_BASE_ADDRESS + TRESURE_OFFSETS[i], treasures[i]);
+			}
+		}
 	}
 }
