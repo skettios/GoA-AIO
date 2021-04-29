@@ -11,12 +11,6 @@ void GoA_WriteString(u8* address, const char* value, size_t length)
 		GoA_Write<char>(address + i, value[i]);
 }
 
-void GoA_WriteByteArray(u8* address, u8* bytes, size_t length)
-{
-	for (size_t i = 0; i < length; i++)
-		GoA_Write<u8>(address + i, bytes[i]);
-}
-
 int Lua_WriteString(lua_State* L)
 {
 	if (lua_isstring(L, 2))
