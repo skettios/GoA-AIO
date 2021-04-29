@@ -5,6 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace GoA
 {
+    public struct RandomizerConfig
+    {
+        public ushort[] treasures;
+    }
     class Native
     {
         [DllImport("kernel32.dll")]
@@ -146,6 +150,24 @@ namespace GoA
 
             IntPtr runAddress = Native.GetProcAddress(DLLHandle, "GoA_Run");
             IntPtr threadHandle = Native.CreateRemoteThread(KH2Handle, IntPtr.Zero, 0, runAddress, configAddress, 0, IntPtr.Zero);
+            if (threadHandle != IntPtr.Zero)
+                Native.CloseHandle(threadHandle);
+        }
+
+        public void Randomize(RandomizerConfig config)
+        {
+            int size = config.treasures.Length * sizeof(ushort);
+
+            IntPtr configAddress = Native.VirtualAllocEx(KH2Handle, IntPtr.Zero, (uint)size, Native.MEM_ALL, Native.PAGE_READWRITE);
+
+            byte[] bytes = new byte[size];
+            Buffer.BlockCopy(config.treasures, 0, bytes, 0, bytes.Length);
+
+            UIntPtr bytesWritten;
+            Native.WriteProcessMemory(KH2Handle, configAddress, bytes, (uint)size, out bytesWritten);
+
+            IntPtr randomizeAddress = Native.GetProcAddress(DLLHandle, "GoA_Randomize");
+            IntPtr threadHandle = Native.CreateRemoteThread(KH2Handle, IntPtr.Zero, 0, randomizeAddress, configAddress, 0, IntPtr.Zero);
             if (threadHandle != IntPtr.Zero)
                 Native.CloseHandle(threadHandle);
         }

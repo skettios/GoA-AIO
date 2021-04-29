@@ -33,6 +33,7 @@ namespace GoA
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.traySeed = new System.Windows.Forms.ToolStripMenuItem();
             this.trayKeybinds = new System.Windows.Forms.ToolStripMenuItem();
             this.trayExit = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -54,11 +55,18 @@ namespace GoA
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.traySeed,
             this.trayKeybinds,
             this.trayExit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 70);
+            // 
+            // traySeed
+            // 
+            this.traySeed.Name = "traySeed";
+            this.traySeed.Size = new System.Drawing.Size(160, 22);
+            this.traySeed.Text = "Load Seed";
             // 
             // trayKeybinds
             // 
@@ -101,7 +109,7 @@ namespace GoA
             this.MaximumSize = new System.Drawing.Size(500, 550);
             this.MinimumSize = new System.Drawing.Size(500, 550);
             this.Name = "Form1";
-            this.Text = "Garden of Assemblage All in One";
+            this.Text = "Garden of Assemblage Randomizer All in One";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
@@ -123,6 +131,7 @@ namespace GoA
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem trayExit;
         private System.Windows.Forms.ToolStripMenuItem trayKeybinds;
+        private System.Windows.Forms.ToolStripMenuItem traySeed;
     }
 }
 

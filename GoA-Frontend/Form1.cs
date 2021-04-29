@@ -1,21 +1,34 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO;
+using YamlDotNet.RepresentationModel;
+using System.Runtime.InteropServices;
 
 namespace GoA
 {
     public partial class Form1 : Form
     {
         private Backend backend;
+        private RandomizerConfig randofig;
+
+        [DllImport("kernel32.dll")]
+        static extern bool AllocConsole();
 
         public Form1()
         {
             InitializeComponent();
             backend = new Backend();
+            randofig = new RandomizerConfig()
+            {
+                treasures = new ushort[592]
+            };
+            for (var i = 0; i < 592; i++)
+                randofig.treasures[i] = 0x00;
         }
 
         const string WAITING_STRING = "Waiting for KINGDOM HEARTS II FINAL MIX";
-        const string ATTACHED_STRING = "Garden of Assemblage running";
+        const string ATTACHED_STRING = "Garden of Assemblage Mod running";
 
         private void SetGameAttachedLabels(bool toggle)
         {
@@ -89,7 +102,8 @@ namespace GoA
             
             trayExit.Click += trayExit_Click;
             trayKeybinds.CheckedChanged += trayKeybinds_OnCheckedChanged;
-            
+            traySeed.Click += traySeed_Click;
+
             waitTimer.Start();
             
             Hide();
@@ -102,6 +116,41 @@ namespace GoA
 
         private void trayKeybinds_OnCheckedChanged(object sender, EventArgs e)
         {
+        }
+
+        private void traySeed_Click(object sender, EventArgs e)
+        {
+            using (var fileDialog = new OpenFileDialog())
+            {
+                fileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+                fileDialog.Filter = "zip files (*.zip)|*.zip|yaml files (*.yml)|*.yml|All files (*.*)|*.*";
+                fileDialog.FilterIndex = 1;
+                fileDialog.RestoreDirectory = true;
+
+                if (fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    var filePath = fileDialog.FileName;
+                    var fileStream = fileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        var yaml = new YamlStream();
+                        yaml.Load(reader);
+
+                        var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
+                        foreach (var entry in mapping.Children)
+                        {
+                            uint location = uint.Parse(entry.Key.ToString());
+                            ushort itemId = ushort.Parse(entry.Value["ItemId"].ToString());
+                            randofig.treasures[location] = itemId;
+                        }
+
+                        reader.Close();
+
+                        backend.Randomize(randofig);
+                    }
+                }
+            }
         }
     }
 }
