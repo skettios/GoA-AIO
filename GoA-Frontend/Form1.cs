@@ -102,7 +102,6 @@ namespace GoA
             
             trayExit.Click += trayExit_Click;
             trayKeybinds.CheckedChanged += trayKeybinds_OnCheckedChanged;
-            traySeed.Click += traySeed_Click;
 
             waitTimer.Start();
             
@@ -146,8 +145,6 @@ namespace GoA
                         }
 
                         reader.Close();
-
-                        backend.Randomize(randofig);
                     }
                 }
             }
