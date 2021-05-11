@@ -11,6 +11,8 @@ KH2FM PC Garden of Assemblage All in One app
 7) Run kh2 normally
 8) Enjoy!
 
+NOTE: if GoA-Frontend doesn't work you may need to install .net framework [here](https://dotnet.microsoft.com/download/dotnet-framework)
+
 # Credits
 - Sonicshadowsilver2 - GoA mod
 - 1234567890num - GoA lua script
